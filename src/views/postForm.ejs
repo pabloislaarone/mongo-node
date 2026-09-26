@@ -6,52 +6,79 @@
   <title>Social Media - <%= post ? "Editar Post" : "Nuevo Post" %></title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
 </head>
-<body class="grey lighten-4">
+<body>
+  <div class="glow-mid"></div>
 
-  <nav>
-    <div class="nav-wrapper teal">
-      <a href="#!" class="brand-logo center">Social Media</a>
+  <nav class="app-nav">
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo center">Social Media</a>
     </div>
   </nav>
 
-  <div class="container" style="margin-top: 30px;">
-    <h4 class="center-align"><%= post ? "Editar Post" : "Nuevo Post" %></h4>
+  <% const authorValue = formData.authorName || ""; %>
+  <% const titleValue = formData.title || (post ? post.title : ""); %>
+  <% const contentValue = formData.content || (post ? post.content : ""); %>
+  <% const hashtagsValue = formData.hashtags || (post && post.hashtags ? post.hashtags.join(", ") : ""); %>
+  <% const imageUrlValue = formData.imageUrl || (post && post.imageUrl ? post.imageUrl : ""); %>
 
-    <form action="<%= post ? `/posts/${post._id}/update` : '/posts' %>" method="POST" class="col s12 m8 offset-m2">
-      <% if (!post) { %>
-        <div class="input-field">
-          <input id="authorName" name="authorName" type="text" required placeholder="Nombre y apellido">
-          <label for="authorName">Nombre del autor</label>
+  <div class="container narrow">
+    <h4 class="section-title" style="margin-top: 60px;"><%= post ? "Editar post" : "Nuevo post" %></h4>
+    <p class="section-subtitle"><%= post ? "Ajusta lo que hace falta" : "Cuéntale al muro qué está pasando" %></p>
+
+    <div class="form-card">
+      <% if (error) { %>
+        <div class="form-error">
+          <i class="material-icons">error_outline</i>
+          <span><%= error %></span>
         </div>
       <% } %>
 
-      <div class="input-field">
-        <input id="title" name="title" type="text" minlength="5" maxlength="30" required value="<%= post ? post.title : '' %>">
-        <label for="title" class="<%= post ? 'active' : '' %>">Título</label>
-      </div>
+      <form action="<%= post ? `/posts/${post._id}/update` : '/posts' %>" method="POST">
+        <% if (!post) { %>
+          <div class="input-field">
+            <input id="authorName" name="authorName" type="text" required placeholder="Nombre y apellido" value="<%= authorValue %>" list="author-list" autocomplete="off">
+            <label for="authorName" class="<%= authorValue ? 'active' : '' %>">Nombre del autor</label>
+            <datalist id="author-list">
+              <% authors.forEach(name => { %>
+                <option value="<%= name %>"></option>
+              <% }) %>
+            </datalist>
+            <span class="field-hint">Autores existentes: <%= authors.join(", ") %></span>
+          </div>
+        <% } %>
 
-      <div class="input-field">
-        <textarea id="content" name="content" class="materialize-textarea" minlength="10" required><%= post ? post.content : '' %></textarea>
-        <label for="content" class="<%= post ? 'active' : '' %>">Contenido</label>
-      </div>
+        <div class="input-field">
+          <input id="title" name="title" type="text" minlength="5" maxlength="30" required value="<%= titleValue %>">
+          <label for="title" class="<%= titleValue ? 'active' : '' %>">Título</label>
+        </div>
 
-      <div class="input-field">
-        <input id="hashtags" name="hashtags" type="text" value="<%= post && post.hashtags ? post.hashtags.join(', ') : '' %>">
-        <label for="hashtags" class="<%= post && post.hashtags && post.hashtags.length ? 'active' : '' %>">Hashtags (separados por coma)</label>
-      </div>
+        <div class="input-field">
+          <textarea id="content" name="content" class="materialize-textarea" minlength="10" required><%= contentValue %></textarea>
+          <label for="content" class="<%= contentValue ? 'active' : '' %>">Contenido</label>
+        </div>
 
-      <div class="input-field">
-        <input id="imageUrl" name="imageUrl" type="text" value="<%= post && post.imageUrl ? post.imageUrl : '' %>">
-        <label for="imageUrl" class="<%= post && post.imageUrl ? 'active' : '' %>">URL de imagen</label>
-      </div>
+        <div class="input-field">
+          <input id="hashtags" name="hashtags" type="text" value="<%= hashtagsValue %>">
+          <label for="hashtags" class="<%= hashtagsValue ? 'active' : '' %>">Hashtags (separados por coma)</label>
+        </div>
 
-      <button class="btn waves-effect waves-light teal" type="submit">
-        <%= post ? "Actualizar" : "Publicar" %>
-        <i class="material-icons right">send</i>
-      </button>
-      <a href="/posts" class="btn-flat">Cancelar</a>
-    </form>
+        <div class="input-field">
+          <input id="imageUrl" name="imageUrl" type="text" value="<%= imageUrlValue %>">
+          <label for="imageUrl" class="<%= imageUrlValue ? 'active' : '' %>">URL de imagen</label>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-stamp" type="submit" style="margin-top: 0;">
+            <%= post ? "Actualizar" : "Publicar" %>
+            <i class="material-icons right">send</i>
+          </button>
+          <a href="/posts" class="btn-flat cancel-link">Cancelar</a>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

@@ -4,21 +4,47 @@
   <meta charset="UTF-8">
   <title>Social Media - Home</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
 </head>
-<body class="container center-align" style="margin-top: 80px;">
+<body>
+  <div class="glow-mid"></div>
 
-  <h2 class="blue-text text-darken-2">Bienvenido a Social Media 🚀</h2>
-  <p class="flow-text">Conéctate, comparte y explora publicaciones</p>
+  <nav class="app-nav">
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo center">Social Media</a>
+    </div>
+  </nav>
 
-  <div class="row" style="margin-top: 50px;">
-    <div class="col s12 m12">
-      <a href="/posts/" class="btn-large waves-effect waves-light blue darken-2">
-        <i class="material-icons left">image</i> Ver Posts
+  <div class="hero">
+    <div class="ticker">
+      <div class="ticker-track">
+        <% for (let r = 0; r < 2; r++) { %>
+          <% stats.topHashtags.forEach(tag => { %>
+            <span class="ticker-item">#<%= tag %></span>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+
+    <span class="eyebrow">● En vivo ahora</span>
+    <h2 class="hero-badge">Todo lo que se comparte,<br>en un solo lugar</h2>
+    <p class="tagline">Publica lo que va a estar en boca de todos. Sin filtros, sin límites.</p>
+
+    <div class="stats-row">
+      <div class="stat-chip"><%= stats.posts %><span class="stat-label">posts</span></div>
+      <div class="stat-chip"><%= stats.hashtags %><span class="stat-label">hashtags</span></div>
+      <div class="stat-chip"><%= stats.authors %><span class="stat-label">autores</span></div>
+    </div>
+
+    <div>
+      <a href="/posts/" class="btn-stamp">
+        <i class="material-icons left">arrow_forward</i> Entrar
       </a>
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </body>
 </html>

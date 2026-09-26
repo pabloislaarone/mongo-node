@@ -46,6 +46,26 @@ class PostService {
     async getPostsByUser(userId) {
         return await postRepository.findByUser(userId);
     }
+
+    computeStats(posts) {
+        const hashtagSet = new Set();
+        const authorSet = new Set();
+        posts.forEach((post) => {
+            (post.hashtags || []).forEach((tag) => hashtagSet.add(tag.toLowerCase()));
+            if (post.user) authorSet.add(String(post.user._id));
+        });
+
+        const topHashtags = hashtagSet.size > 0
+            ? Array.from(hashtagSet).slice(0, 10)
+            : ["viral", "tendencia", "compartir", "elmuro", "postealo"];
+
+        return {
+            posts: posts.length,
+            hashtags: hashtagSet.size,
+            authors: authorSet.size,
+            topHashtags,
+        };
+    }
 }
 
 export default new PostService();

@@ -6,30 +6,63 @@
   <title>Social Media - Post</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
 </head>
-<body class="grey lighten-4">
+<body>
+  <div class="glow-mid"></div>
 
-  <nav>
-    <div class="nav-wrapper teal">
-      <a href="#!" class="brand-logo center">Social Media</a>
+  <nav class="app-nav">
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo center">Social Media</a>
     </div>
   </nav>
 
-  <div class="container">
-    <h4 class="center-align">Bienvenido a Social Media</h4>
-
-    <div class="row">
-      <div class="col s12 m12 right-align">
-        <a href="/posts/new" class="btn waves-effect waves-light blue darken-2">
-          <i class="material-icons left">add</i> Nuevo Post
-        </a>
+  <div class="hero">
+    <div class="ticker">
+      <div class="ticker-track">
+        <% for (let r = 0; r < 2; r++) { %>
+          <% stats.topHashtags.forEach(tag => { %>
+            <span class="ticker-item">#<%= tag %></span>
+          <% }) %>
+        <% } %>
       </div>
     </div>
 
+    <span class="eyebrow">● En vivo ahora</span>
+    <h2 class="hero-badge">El muro</h2>
+    <p class="tagline">Lo último que la comunidad está compartiendo, en tiempo real.</p>
+
+    <div class="stats-row">
+      <div class="stat-chip"><%= stats.posts %><span class="stat-label">posts</span></div>
+      <div class="stat-chip"><%= stats.hashtags %><span class="stat-label">hashtags</span></div>
+      <div class="stat-chip"><%= stats.authors %><span class="stat-label">autores</span></div>
+    </div>
+
+    <div>
+      <a href="/posts/new" class="btn-stamp teal">
+        <i class="material-icons left">add</i> Publicar algo
+      </a>
+    </div>
+  </div>
+
+  <div class="container">
+    <% const chipColors = ["#2f8bff", "#ff8a3d", "#b6ff3d", "#4fd1ff", "#ff5d5d"]; %>
+
+    <% if (posts.length === 0) { %>
+      <div class="empty-state">
+        <h5>Todavía no hay nada por aquí</h5>
+        <p>Sé el primero en publicar algo.</p>
+      </div>
+    <% } %>
+
     <div class="row">
-      <% posts.forEach(post => { %>
+      <% posts.forEach((post, i) => {
+        const authorName = post.user ? `${post.user.name} ${post.user.lastName}` : "Desconocido";
+        const initials = authorName.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase();
+      %>
         <div class="col s12 m6 l4">
-          <div class="card">
+          <div class="post-card">
             <div class="card-image">
               <img src="<%= post.imageUrl || 'https://media.istockphoto.com/id/627795510/photo/example.jpg?s=612x612&w=0&k=20&c=lpUf5rjPVd6Kl_M6heqC8sUncR4FLmtsRzeYdTr5X_I=' %>" alt="Imagen del post">
             </div>
@@ -37,24 +70,21 @@
               <span class="card-title"><%= post.title %></span>
               <p><%= post.content %></p>
               <% if (post.hashtags && post.hashtags.length) { %>
-                <p>
-                  <strong>Hashtags:</strong>
-                  <% post.hashtags.forEach(tag => { %>
-                    <span class="chip">#<%= tag %></span>
+                <div>
+                  <% post.hashtags.forEach((tag, j) => { %>
+                    <span class="hashtag-chip" style="background: <%= chipColors[j % chipColors.length] %>;">#<%= tag %></span>
                   <% }) %>
-                </p>
+                </div>
               <% } %>
             </div>
             <div class="card-action">
-              <div class="right">
-                <a href="/posts/<%= post._id %>/edit" class="btn-flat"><i class="material-icons teal-text">edit</i></a>
+              <span class="author"><span class="avatar"><%= initials %></span> <%= authorName %></span>
+              <div>
+                <a href="/posts/<%= post._id %>/edit" class="icon-btn"><i class="material-icons" style="color: var(--primary); font-size: 20px;">edit</i></a>
                 <form action="/posts/<%= post._id %>/delete" method="POST" style="display:inline;">
-                  <button type="submit" class="btn-flat" style="background:none;border:none;">
-                    <i class="material-icons red-text">delete</i>
-                  </button>
+                  <button type="submit" class="icon-btn"><i class="material-icons" style="color: var(--secondary); font-size: 20px;">delete</i></button>
                 </form>
               </div>
-              <span><strong>Autor:</strong> <%= post.user ? `${post.user.name} ${post.user.lastName}` : "Desconocido" %></span>
             </div>
           </div>
         </div>
